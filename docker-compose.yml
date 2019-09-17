@@ -1,0 +1,34 @@
+version: '2'
+
+services:
+  mariadb:
+    image: 'bitnami/mariadb:10.3'
+    environment:
+      - MARIADB_DATABASE=testingcourse
+      - MARIADB_ROOT_USER=testingcourse
+      - MARIADB_ROOT_PASSWORD=testingcourse
+    restart: always
+
+  testlink:
+    image: 'bitnami/testlink:1'
+    container_name: testlink
+    environment:
+      - MARIADB_HOST=mariadb
+      - MARIADB_PORT_NUMBER=3306
+      - TESTLINK_DATABASE_USER=testingcourse
+      - TESTLINK_DATABASE_NAME=testingcourse
+      - TESTLINK_DATABASE_PASSWORD=testingcourse
+    ports:
+      - '4000:80'
+    depends_on:
+      - mariadb
+    restart: always
+
+  mantisbt:
+    image: 'vimagick/mantisbt:latest'
+    container_name: mantisbt
+    ports:
+      - '4001:80'
+    depends_on:
+      - mariadb
+    restart: always
